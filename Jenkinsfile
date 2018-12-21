@@ -10,6 +10,7 @@ podTemplate(label: 'jenkins-dnd', namespace: 'jenkins', containers: [
             stage 'pull image'
             sh 'docker pull redis'
             stage 'build image'
+            sh 'ls -la'
             sh 'docker build -t app .'
         }
 

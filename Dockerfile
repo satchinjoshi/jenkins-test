@@ -19,7 +19,6 @@ RUN wget -q -O chrome.zip https://commondatastorage.googleapis.com/chromium-brow
   && rm chrome.zip \
   && ln -s $PWD/chrome-linux/chrome /usr/bin/google-chrome-unstable
 
-COPY fonts/ /usr/local/share/fonts/
 RUN fc-cache -svf
 
 RUN google-chrome-unstable --version
