@@ -1,14 +1,16 @@
-podTemplate(label: 'mypod', namespace: 'jenkins', containers: [
+podTemplate(label: 'jenkins-dnd', namespace: 'jenkins', containers: [
     containerTemplate(name: 'docker', image: 'docker:dind', ttyEnabled: true, alwaysPullImage: true, privileged: true,
       command: 'dockerd --host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:2375 --storage-driver=overlay')
   ],
   volumes: [emptyDirVolume(memory: false, mountPath: '/var/lib/docker')]) {
 
-    node ('mypod') {
-        stage 'Run a docker thing'
+    node ('jenkins-dnd') {
+        /* stage 'Run a docker thing' */
         container('docker') {
-            stage 'Docker thing1'
+            stage 'pull image'
             sh 'docker pull redis'
+            stage 'build image'
+            sh 'docker build -t app .'
         }
 
     }
