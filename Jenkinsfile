@@ -1,25 +1,15 @@
-node {
-    // Clean workspace before doing anything
-    deleteDir()
+podTemplate(label: 'mypod', namespace: 'jenkins', containers: [
+    containerTemplate(name: 'docker', image: 'docker:dind', ttyEnabled: true, alwaysPullImage: true, privileged: true,
+      command: 'dockerd --host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:2375 --storage-driver=overlay')
+  ],
+  volumes: [emptyDirVolume(memory: false, mountPath: '/var/lib/docker')]) {
 
-    stage ('Clone') {
-        checkout scm
-    }
-    stage ('Build') {
-        sh "echo 'shell scripts to build project...'"
-    }
-    stage ('Tests') {
-        parallel 'static': {
-            sh "echo 'shell scripts to run static tests...'"
-        },
-        'unit': {
-            sh "echo 'shell scripts to run unit tests...'"
-        },
-        'integration': {
-            sh "echo 'shell scripts to run integration tests...'"
+    node ('mypod') {
+        stage 'Run a docker thing'
+        container('docker') {
+            stage 'Docker thing1'
+            sh 'docker pull redis'
         }
+
     }
-    stage ('Deploy') {
-        sh "echo 'shell scripts to deploy to server...'"
-    }
-}
+  }
